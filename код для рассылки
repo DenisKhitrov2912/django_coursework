@@ -1,0 +1,17 @@
+from django.core.mail import send_mail
+import smtplib
+
+mailing = DistributionParams.objects.get(pk=1)
+try:
+    server_response = send_mail(
+    subject, #(обязательный): тема письма
+    message, #(обязательный): текст письма
+    from_email, #(опциональный): адрес отправителя
+    recipient_list, #(обязательный): список адресов получателей
+    fail_silently=False
+    )
+    attempt = TrySending(mailing=mailing, status='Success')
+    attempt.save()
+except smtplib.SMTPException as e:
+    attempt = TrySending(mailing=mailing, status='Failed', error_message=str(e))
+    attempt.save()

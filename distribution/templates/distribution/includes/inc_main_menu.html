@@ -1,0 +1,12 @@
+<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+    <h5 class="my-0 mr-md-auto font-weight-normal">Рассылаем спам уже 228 лет!</h5>
+    <nav class="ms-5">
+        <a class="p-2 btn btn-outline-primary" href="{% url 'distribution:client_create' %}">Создать лоха</a>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'distribution:clients' %}">К лохам!</a>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'distribution:message_create' %}">Напиши лоху</a>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'distribution:messages' %}">Послания лохам</a>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'distribution:distparams_create' %}">Настроить спам</a>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'distribution:distparams' %}">Все спамовые настройки</a>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'distribution:trysending' %}">Попыточки</a>
+    </nav>
+</div>
