@@ -1,106 +1,83 @@
-from django.utils import timezone
 from django.db import models
-from django.core.mail import send_mail
-import smtplib
+
+NULLABLE = {'null': True, 'blank': True}
 
 
-NULLABLE = {'blank': True, 'null': True}
-
-
-class Clients(models.Model):
-
-    email = models.EmailField(verbose_name='email')
-    name = models.CharField(max_length=200, verbose_name='имя')
-    surname = models.CharField(max_length=200, verbose_name='фамилия')
-    patronymic = models.CharField(max_length=200, verbose_name='отчество', **NULLABLE)
-    comment = models.TextField(verbose_name='Комментарий')
+class Client(models.Model):
+    FIO = models.CharField(max_length=150, verbose_name='ФИО')
+    email = models.EmailField(max_length=150, verbose_name='почта', unique=True)
+    comment = models.TextField(verbose_name='комментарий', **NULLABLE)
 
     def __str__(self):
-        return f"{self.email}, {self.name}, {self.surname}"
+        return f"{self.FIO} {self.email}"
 
     class Meta:
-        verbose_name = 'клиент'
-        verbose_name_plural = 'клиенты'
+        verbose_name = "клиент"
+        verbose_name_plural = "клиенты"
+        ordering = ('FIO',)
+
+
+class MailingSettings(models.Model):
+    DAILY = "Раз в день"
+    WEEKLY = "Раз в неделю"
+    MONTHLY = "Раз в месяц"
+
+    PERIODICITY_CHOICES = [
+        (DAILY, "Раз в день"),
+        (WEEKLY, "Раз в неделю"),
+        (MONTHLY, "Раз в месяц"),
+    ]
+
+    CREATED = 'Создана'
+    STARTED = 'Запущена'
+    COMPLETED = 'Завершена'
+
+    STATUS_CHOICES = [
+        (COMPLETED, "Завершена"),
+        (CREATED, "Создана"),
+        (STARTED, "Запущена"),
+    ]
+
+    start_time = models.DateTimeField(verbose_name='время начала рассылки')
+    end_time = models.DateTimeField(verbose_name='время окончания рассылки')
+    periodicity = models.CharField(max_length=50, verbose_name='периодичность', choices=PERIODICITY_CHOICES)
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default=CREATED, verbose_name='статус рассылки')
+
+    clients = models.ManyToManyField(Client, verbose_name='клиенты рассылки')
+
+    def __str__(self):
+        return f'time: {self.start_time} - {self.end_time}, periodicity: {self.periodicity}, status: {self.status}'
+
+    class Meta:
+        verbose_name = 'настройки рассылки'
+        verbose_name_plural = 'настройки рассылки'
 
 
 class Message(models.Model):
-    theme = models.CharField(max_length=200, verbose_name='тема письма')
-    message = models.TextField(verbose_name='письмо')
+    title = models.CharField(max_length=100, verbose_name='тема письма')
+    text = models.TextField(verbose_name='тело письма')
+    mailing_list = models.ForeignKey(MailingSettings, on_delete=models.CASCADE, verbose_name='рассылка',
+                                     related_name='messages', **NULLABLE)
 
     def __str__(self):
-        return f"{self.theme}"
+        return self.title
 
     class Meta:
-        verbose_name = 'письмо'
-        verbose_name_plural = 'письма'
+        verbose_name = 'сообщение'
+        verbose_name_plural = 'сообщения'
 
 
-class DistributionParams(models.Model):
+class Log(models.Model):
+    time = models.DateTimeField(verbose_name='дата и время последней попытки', auto_now_add=True)
+    status = models.BooleanField(verbose_name='статус попытки')
+    server_response = models.CharField(verbose_name='ответ почтового сервера', **NULLABLE)
 
-    DAILY = 'daily'
-    WEEKLY = 'weekly'
-    MONTHLY = 'monthly'
-    PERIOD_CHOICES = [
-        (DAILY, 'Раз в день'),
-        (WEEKLY, 'Раз в неделю'),
-        (MONTHLY, 'Раз в месяц'),
-    ]
-    DEFAULT_PERIOD = DAILY
-
-    CREATED = 'created'
-    STARTED = 'started'
-    COMPLETED = 'completed'
-
-    date = models.DateField(verbose_name='дата начала отправки')
-    date_end = models.DateField(verbose_name='дата конца отправки')
-    time = models.TimeField(verbose_name='время начала отправки')
-    time_end = models.TimeField(verbose_name='время конца отправки')
-    period = models.CharField(max_length=7, verbose_name='периодичность')
-    status = models.CharField(max_length=10, verbose_name='статус')
-    message = models.ForeignKey(Message, on_delete=models.CASCADE, verbose_name='сообщение')
-    clients = models.ManyToManyField(Clients, verbose_name='клиент')
-    try_sending = models.ForeignKey('TrySending', on_delete=models.CASCADE, verbose_name='попытка отправки')
+    mailing_list = models.ForeignKey(MailingSettings, on_delete=models.CASCADE, verbose_name='рассылка')
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, verbose_name='клиент рассылки', **NULLABLE)
 
     def __str__(self):
-        return f"{self.date}, {self.time}, {self.period}, {self.status}"
-
-    def save(self, *args, **kwargs):
-        if self.date_end > self.date > timezone.now().date() and self.time_end > self.time > timezone.now().time():
-            self.status = self.STARTED
-        if self.date < timezone.now().date() and self.time < timezone.now().time():
-            self.status = self.CREATED
-        if self.try_sending.status == 'SUCCESS':
-            self.status = self.COMPLETED
-        super(DistributionParams, self).save(*args, **kwargs)
+        return f'{self.time} {self.status}'
 
     class Meta:
-        verbose_name = 'настройка'
-        verbose_name_plural = 'настройки'
-
-
-class TrySending(models.Model):
-    SUCCESS = 'Success'
-    UNSUCCESS = 'Failed'
-    DEFAULT_STATUS = SUCCESS
-    last_date = models.DateField(auto_now_add=True, verbose_name='дата последней попытки')
-    last_time = models.TimeField(auto_now_add=True, verbose_name='время последней попытки')
-    status = models.CharField(max_length=10, verbose_name='статус')
-    error_message = models.TextField(verbose_name='сообщение об ошибке', **NULLABLE)
-
-    def __str__(self):
-        return f"{self.last_date}, {self.last_time}, {self.status}, {self.answer}"
-
-    def save(self, *args, **kwargs):
-        mailing = DistributionParams.objects.get(pk=1)
-        objects = DistributionParams.objects.all()
-        try:
-            send_mail(subject=Message.theme, recipient_list=[mail for mail in objects.clients.email], from_email='example@ya.ru', message=Message.message, fail_silently=False)
-            attempt = TrySending(mailing=mailing, status='Success')
-            attempt.save()
-        except smtplib.SMTPException as e:
-            attempt = TrySending(mailing=mailing, status='Failed', error_message=str(e))
-            attempt.save()
-
-    class Meta:
-        verbose_name = 'попытка'
-        verbose_name_plural = 'попытки'
+        verbose_name = 'лог'
+        verbose_name_plural = 'логи'

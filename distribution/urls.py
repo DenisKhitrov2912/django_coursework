@@ -1,27 +1,20 @@
 from django.urls import path
 
-from distribution.views import ClientsCreateView, ClientsDetailView, ClientsListView, ClientsUpdateView, \
-    ClientsDeleteView, MessageCreateView, MessageDetailView, MessageListView, MessageUpdateView, MessageDeleteView, \
-    DistParamsCreateView, DistParamsDetailView, DistParamsListView, DistParamsUpdateView, DistParamsDeleteView, \
-    TrySendingDetailView, TrySendingListView, TrySendingDeleteView
+from distribution.apps import DistributionConfig
+from distribution.views import MailingSettingsDetailView, MailingSettingsListView, MailingSettingsCreateView, \
+    MailingSettingsDeleteView, MailingSettingsUpdateView, ClientListView, ClientCreateView, ClientUpdateView, \
+    LogListView
+
+app_name = DistributionConfig.name
 
 urlpatterns = [
-    path('', ClientsCreateView.as_view(), name='client_create'),
-    path('client/<int:pk>/', ClientsDetailView.as_view(), name='client'),
-    path('clients/', ClientsListView.as_view(), name='clients'),
-    path('client/edit/<int:pk>/', ClientsUpdateView.as_view(), name='client_edit'),
-    path('client/delete/<int:pk>/', ClientsDeleteView.as_view(), name='client_delete'),
-    path('message/create/', MessageCreateView.as_view(), name='message_create'),
-    path('message/<int:pk>', MessageDetailView.as_view(), name='message'),
-    path('messages', MessageListView.as_view(), name='messages'),
-    path('message/edit/<int:pk>/', MessageUpdateView.as_view(), name='message_edit'),
-    path('message/delete/<int:pk>', MessageDeleteView.as_view(), name='message_delete'),
-    path('distparams/create/', DistParamsCreateView.as_view(), name='distparams_create'),
-    path('distparams/<int:pk>', DistParamsDetailView.as_view(), name='distparams_one'),
-    path('distparams/', DistParamsListView.as_view(), name='distparams'),
-    path('distparams/edit/<int:pk>', DistParamsUpdateView.as_view(), name='distparams_edit'),
-    path('distparams/delete/<int:pk>', DistParamsDeleteView.as_view(), name='distparams_delete'),
-    path('trysending/<int:pk>', TrySendingDetailView.as_view(), name='trysending_one'),
-    path('trysending', TrySendingListView.as_view(), name='trysending'),
-    path('trysending/delete/<int:pk>', TrySendingDeleteView.as_view(), name='trysending_delete')
+    path('log', LogListView.as_view(), name='log_list'),
+    path('clients/edit/<int:pk>/', ClientUpdateView.as_view(), name='edit_client'),
+    path('clients/create', ClientCreateView.as_view(), name='create_client'),
+    path('clients', ClientListView.as_view(), name='clients_list'),
+    path('distribution/<int:pk>/', MailingSettingsDetailView.as_view(), name='distribution_detail'),
+    path('delete/<int:pk>/', MailingSettingsDeleteView.as_view(), name='distribution_delete'),
+    path('', MailingSettingsListView.as_view(), name='distribution_list'),
+    path('create', MailingSettingsCreateView.as_view(), name='create_distribution'),
+    path('edit/<int:pk>/', MailingSettingsUpdateView.as_view(), name='distribution_edit'),
 ]
