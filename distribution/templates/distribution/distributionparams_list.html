@@ -1,56 +1,42 @@
 {% extends 'distribution/main.html' %}
 {% load static %}
-{% load my_tags %}
 {% block content %}
 
 <main role="main">
 
     <section class="jumbotron text-center">
         <div class="container">
-            <h1 class="jumbotron-heading">Наши товары</h1>
+            <h1 class="jumbotron-heading">Все рассылки:</h1>
         </div>
     </section>
 
+
     <div class="album py-5 bg-light">
         <div class="container">
-
-            <div class="col-md-12">
+            <div class="row">
                 {% for object in object_list %}
-                <div class="col-12 text-center">
-                    <img class="card-img-top"
-                         src='{{ object.image|mymedia }}'
-                         alt="Card image cap">
+                <div class="col-md-4">
                     <div class="card mb-4 box-shadow">
                         <div class="card-header">
-                            <h4 class="my-0 font-weight-normal">{{ object|title }}</h4>
+                            <h4 class="d-flex justify-content-center align-items-center">{{ object|title }}</h4>
                         </div>
-                        <div class="card-body">
-                            <a href="{% url 'catalog:products' object.pk %}" type="button"
-                               class="btn btn-lg btn-block btn-outline-primary">Перейти</a>
+                        <div class="card-body d-flex justify-content-center align-items-center">
+                            <a href="{% url 'distribution:distparams_one' object.pk  %}" type="button"
+                               class="btn btn-lg btn-outline-primary">Перейти</a>
+                        </div>
+                        <div class="card-body d-flex justify-content-center align-items-center">
+                            <a href="{% url 'distribution:distparams_edit' object.pk  %}" type="button"
+                               class="btn btn-lg btn-outline-primary">Изменить</a>
+                        </div>
+                        <div class="card-body d-flex justify-content-center align-items-center">
+                            <a href="{% url 'distribution:distparams_delete' object.pk  %}" type="button"
+                               class="btn btn-lg btn-outline-primary">Удалить</a>
                         </div>
                     </div>
                 </div>
                 {% endfor %}
-                <div class="pagination">
-                <span class="step-links">
-                {% if object_list.has_previous %}
-            <a href="?page=1">&laquo; Первая</a>
-            <a href="?page={{ object_list.previous_page_number }}">Предыдущая</a>
-        {% endif %}
-
-        <span class="current">
-            Страница {{ object_list.number }} из {{ object_list.paginator.num_pages }}.
-        </span>
-
-        {% if object_list.has_next %}
-            <a href="?page={{ object_list.next_page_number }}">Следующая</a>
-            <a href="?page={{ object_list.paginator.num_pages }}">Последняя &raquo;</a>
-        {% endif %}
-    </span>
-                </div>
             </div>
         </div>
-    </div>
     </div>
 
 </main>
@@ -65,4 +51,5 @@
 <script src="{% static 'js/popper.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
 <script src="{% static 'js/holder.min.js' %}"></script>
+
 {% endblock %}

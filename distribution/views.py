@@ -72,7 +72,7 @@ class DistParamsCreateView(CreateView):
     model = DistributionParams
     fields = (
         'date', 'date_end', 'time', 'time_end', 'period',)
-    success_url = reverse_lazy('distribution:clients_list')
+    success_url = reverse_lazy('distribution:distparams_create')
 
 
 class DistParamsDetailView(DetailView):
@@ -81,19 +81,19 @@ class DistParamsDetailView(DetailView):
 
 class DistParamsListView(ListView):
     model = DistributionParams
-    template_name = 'distribution/clients_list.html'
+    template_name = 'distribution/distributionparams_list.html'
 
 
 class DistParamsUpdateView(UpdateView):
     model = DistributionParams
     fields = (
         'period',)
-    success_url = reverse_lazy('distribution:clients_list')
+    success_url = reverse_lazy('distribution:distparams_edit')
 
 
 class DistParamsDeleteView(DeleteView):
     model = DistributionParams
-    success_url = reverse_lazy('distribution:client_create')
+    success_url = reverse_lazy('distribution:distparams')
 
 
 class TrySendingDetailView(DetailView):

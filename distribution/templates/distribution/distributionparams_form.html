@@ -1,64 +1,25 @@
 {% extends 'distribution/main.html' %}
-
 {% block content %}
-<h1>Contact Page</h1>
-<ul>
-    {% for contact in contacts %}
-    <li>Name: {{ contact.name }}, Email: {{ contact.email }}, Phone: {{ contact.phone }}</li>
-    {% endfor %}
-</ul>
 
 <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <h1 class="display-4">Контакты</h1>
+    <h1 class="display-4">Настрой лоховскую рассылку!</h1>
 </div>
 
 <div class="container">
-    <div class="row text-start">
-        <div class="col-lg-9 col-md-6 col-sm-12">
+  <div class="row justify-content-center">
+    <div class="col-lg-5 col-md-6 col-sm-12">
             <div class="card mb-4 box-shadow">
                 <div class="card-body">
-                    <table class="table table-striped">
-                        <tr>
-                            <td class="w-25">Страна</td>
-                            <td>USA</td>
-                        </tr>
-                        <tr>
-                            <td class="w-25">ИНН</td>
-                            <td>91-1144442</td>
-                        </tr>
-                        <tr>
-                            <td class="w-25">Адрес</td>
-                            <td>Redmond,WA,98052-6399</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6 col-sm-12">
-            <div class="card mb-4 box-shadow">
-                <div class="card-header">
-                    <h4 class="my-0 font-weight-normal">Свяжитесь с нами</h4>
-                </div>
-                <div class="card-body">
-                    <form method="post" action="" class="form-floating">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="name">Имя</label>
-                            <input type="text" name="name" class="form-control" id="name" placeholder="Ваше имя"
-                                   required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="phone">Телефон</label>
-                            <input type="text" name="phone" class="form-control" id="phone"
-                                   placeholder="Контактный телефон" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="message">Сообщение</label>
-                            <textarea type="text" name="message" class="form-control" id="message"
-                                      placeholder="Сообщения" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-lg btn-block btn-outline-primary">Отправить</button>
-                    </form>
+                    <form method="post">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            {% if object %}
+                            <button type="submit" class="btn btn-primary" >Изменить</button>
+                            {% else %}
+                            <button type="submit" class="btn btn-primary">Создать</button>
+                            {% endif %}
+                            <a href="{% url 'distribution:distparams' %}" class="btn btn-warning">Отмена</a>
+                        </form>
                 </div>
             </div>
         </div>
