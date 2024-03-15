@@ -8,7 +8,6 @@ class DistributionConfig(AppConfig):
     name = 'distribution'
 
     def ready(self):
-        from distribution.models import MailingSettings, Client, Message
-        from distribution.services import send_mailling
+        from distribution.services import sending_mail
         sleep(2)
-        send_mailling(mailing=MailingSettings, clients=Client, messages=Message)
+        sending_mail()
