@@ -5,7 +5,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    {% if object.owner == request.user or request.user.is_superuser or request.user.is_content_manager %}
+                    {% if object.owner == request.user or request.user.is_superuser or perms.distribution.delete_blogwriting %}
                     <form method="post">
                         {% csrf_token %}
                         <p>Хотите удалить рассылку №{{ object.pk }}?</p>

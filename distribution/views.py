@@ -1,9 +1,9 @@
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, ListView, DetailView, DeleteView, UpdateView
 from django.forms import inlineformset_factory
 
-from distribution.forms import MessageForm, MailingSettingsForm, ClientForm
+from distribution.forms import MessageForm, MailingSettingsForm, ClientForm, PermMailingSettingsForm
 from distribution.models import Client, MailingSettings, Message, Log
 
 
@@ -19,7 +19,7 @@ class ClientCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         return reverse('distribution:clients_list')
 
     def test_func(self):
-        return self.request.user.is_content_manager or self.request.user.is_superuser
+        return self.request.user.is_superuser
 
 
 class ClientUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -30,7 +30,7 @@ class ClientUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return reverse('distribution:clients_list')
 
     def test_func(self):
-        return self.request.user.is_content_manager or self.request.user.is_superuser
+        return self.request.user.is_superuser
 
 
 class MailingSettingsDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
@@ -38,7 +38,8 @@ class MailingSettingsDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailV
 
     def test_func(self):
         mailing_settings = self.get_object()
-        return self.request.user.is_content_manager or self.request.user.is_superuser or self.request.user == mailing_settings.owner
+        return self.request.user.is_superuser or self.request.user == mailing_settings.owner or self.request.user.has_perm(
+            'distribution.view_mailingsettings')
 
 
 class MailingSettingsListView(LoginRequiredMixin, ListView):
@@ -96,12 +97,13 @@ class MailingSettingsCreateView(LoginRequiredMixin, CreateView):
         return reverse('distribution:distribution_list')
 
 
-class MailingSettingsDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class MailingSettingsDeleteView(LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin, DeleteView):
     model = MailingSettings
+    permission_required = 'distribution.delete_mailingsettings'
 
     def test_func(self):
         mailing_settings = self.get_object()
-        return self.request.user.is_content_manager or self.request.user.is_superuser or self.request.user == mailing_settings.owner
+        return self.request.user.is_superuser or self.request.user == mailing_settings.owner
 
     def get_success_url(self):
         return reverse('distribution:distribution_list')
@@ -112,7 +114,12 @@ class MailingSettingsUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateV
     form_class = MailingSettingsForm
 
     def test_func(self):
-        return self.request.user.is_superuser
+        return self.request.user.is_superuser or self.request.user.has_perm('distribution.change_status')
+
+    def get_form_class(self):
+        if self.request.user.has_perm('distribution.change_status') and not self.request.user.is_superuser:
+            return PermMailingSettingsForm
+        return MailingSettingsForm
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -145,7 +152,7 @@ class LogListView(LoginRequiredMixin, ListView):
         context_data = super().get_context_data(*args, **kwargs)
         user = self.request.user
         mailing_list = MailingSettings.objects.filter(owner=user).first()
-        if user.is_superuser or user.is_content_manager:
+        if user.is_superuser:
             context_data['all'] = Log.objects.count()
             context_data['success'] = Log.objects.filter(
                 status=True).count()

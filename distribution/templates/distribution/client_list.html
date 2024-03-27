@@ -17,7 +17,7 @@
                         <th><h4>ФИО клиента</h4></th>
                         <th><h4>email клиента</h4></th>
                         <th><h4>Комментарий</h4></th>
-                        {% if request.user.is_superuser or request.user.is_content_manager %}
+                        {% if request.user.is_superuser %}
                         <th><h4>Исправить данные</h4></th>
                         {% endif %}
                     </tr>
@@ -26,7 +26,7 @@
                         <td><h4>{{ object.FIO }}</h4></td>
                         <td><h4>{{ object.email }}</h4></td>
                         <td><h4>{{ object.comment }}</h4></td>
-                        {% if request.user.is_superuser or request.user.is_content_manager %}
+                        {% if request.user.is_superuser %}
                         <td><h4><a class="btn btn-lg btn-warning"
                                    href="{% url 'distribution:edit_client' object.pk %}">Исправить</a></h4></td>
                         {% endif %}
@@ -38,7 +38,7 @@
     </div>
     <div class="row text-right mt-4">
         <div class="col-12">
-            {% if request.user.is_superuser or request.user.is_content_manager %}
+            {% if request.user.is_superuser %}
             <a class="p-2 btn btn-outline-primary btn-block btn-lg" href="{% url 'distribution:create_client' %}">Создать
                 нового клиента</a>
             {% endif %}

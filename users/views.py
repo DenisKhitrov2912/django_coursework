@@ -4,15 +4,16 @@ import string
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth.views import LogoutView as BaseLogoutView
 from django.core.mail import send_mail
 
 from django.http import Http404
 from django.shortcuts import redirect
-from django.views.generic import CreateView, UpdateView, FormView, TemplateView
+from django.views.generic import CreateView, UpdateView, FormView, TemplateView, ListView, DetailView
 
-from users.forms import UserRegisterForm, UserForm, UserPasswordResetForm
+from users.forms import UserRegisterForm, UserForm, UserPasswordResetForm, PermUserForm
 from users.models import User
 from django.urls import reverse_lazy
 
@@ -85,3 +86,19 @@ class UserPasswordResetView(FormView):
 
 class UserPasswordSentView(TemplateView):
     template_name = 'users/user_password_sent.html'
+
+
+class UserListView(PermissionRequiredMixin, ListView):
+    model = User
+    permission_required = 'users.view_user'
+
+
+class UserDetailView(PermissionRequiredMixin, DetailView):
+    model = User
+    permission_required = 'users.view_user'
+
+
+class UserMngUpdateView(UpdateView):
+    model = User
+    success_url = reverse_lazy('users:users')
+    form_class = PermUserForm

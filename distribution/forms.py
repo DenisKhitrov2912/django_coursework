@@ -16,6 +16,12 @@ class MailingSettingsForm(StyleFormMixin, ModelForm):
         fields = ('start_time', 'end_time', 'periodicity', 'status', 'clients',)
 
 
+class PermMailingSettingsForm(StyleFormMixin, ModelForm):
+    class Meta:
+        model = MailingSettings
+        fields = ('status', )
+
+
 class MessageForm(StyleFormMixin, ModelForm):
     class Meta:
         model = Message

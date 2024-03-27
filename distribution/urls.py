@@ -14,5 +14,5 @@ urlpatterns = [
     path('delete/<int:pk>/', MailingSettingsDeleteView.as_view(), name='distribution_delete'),
     path('', MailingSettingsListView.as_view(), name='distribution_list'),
     path('create/', MailingSettingsCreateView.as_view(), name='create_distribution'),
-    path('edit/<int:pk>/', MailingSettingsUpdateView.as_view(), name='distribution_edit'),
+    path('edit/<int:pk>/', MailingSettingsUpdateView.as_view(template_name='distribution/mailingsettings_update_form.html'), name='distribution_edit'),
 ]
