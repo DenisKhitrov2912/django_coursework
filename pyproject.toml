@@ -7,10 +7,10 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-django = "^5.0.3"
 psycopg2-binary = "^2.9.9"
 pytils = "^0.4.1"
 django-apscheduler = "^0.6.2"
+django = "4.2"
 
 
 [build-system]

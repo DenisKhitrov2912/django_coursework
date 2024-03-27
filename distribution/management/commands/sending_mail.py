@@ -25,6 +25,7 @@ class Command(BaseCommand):
 
         for mailing in mailings:
             mailing.status = MailingSettings.STARTED
+            mail_count = 0
             try:
                 send_mail(
                     subject=Message.objects.get(pk=mailing.id).title,
@@ -33,21 +34,20 @@ class Command(BaseCommand):
                     recipient_list=[client.email for client in mailing.clients.all()],
                     fail_silently=False
                 )
-                for client in mailing.clients.all():
-                    log = Log.objects.create(
-                        time=timezone.localtime(timezone.now()),
-                        status=True,
-                        server_response='OK',
-                        mailing_list=mailing,
-                        client=client
-                    )
-                    log.save()
+                server_response = 'ok'
+                status = True
+                mail_count += 1
+                if len(mailings) < mail_count:
+                    break
             except smtplib.SMTPException as e:
+                server_response = str(e)
+                status = False
+            finally:
                 for client in mailing.clients.all():
                     log = Log.objects.create(
                         time=timezone.localtime(timezone.now()),
-                        status=False,
-                        server_response=str(e),
+                        status=status,
+                        server_response=server_response,
                         mailing_list=mailing,
                         client=client
                     )
