@@ -1,5 +1,6 @@
 {% extends "distribution/base.html" %}
 {% block content %}
+{% if user.is_authenticated and user.is_superuser %}
 <form method="post" class="row">
     {% csrf_token %}
     <div class="col-md-6">
@@ -32,4 +33,5 @@
         </div>
     </div>
 </form>
+{% endif %}
 {% endblock %}

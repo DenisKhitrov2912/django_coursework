@@ -7,7 +7,7 @@
     </div>
 </div>
 
-
+{% if object.owner == request.user or request.user.is_superuser or request.user.is_content_manager %}
 <div class="col-12 text-center">
     <table class="table table-striped">
         <tr>
@@ -29,7 +29,7 @@
         </tr>
     </table>
     <div align="center"><a class="btn btn-outline-primary btn-lg" href="{% url 'distribution:distribution_list' %}">Вернуться
-    на главную страницу</a></div>
-
+        на главную страницу</a></div>
+    {% endif %}
 
     {% endblock %}

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     'distribution',
     'django_apscheduler',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -109,7 +110,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'Europe/Moscow'
 
@@ -144,5 +145,11 @@ EMAIL_USE_SSL = False
 EMAIL_HOST_USER = 'hitrov.95@yandex.ru'
 EMAIL_HOST_PASSWORD = os.getenv('YA_PASSWORD')
 
+AUTH_USER_MODEL = 'users.User'
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = 'users:login'
+
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 APSCHEDULER_RUN_NOW_TIMEOUT = 25
+

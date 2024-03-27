@@ -25,7 +25,6 @@ class Command(BaseCommand):
 
         for mailing in mailings:
             mailing.status = MailingSettings.STARTED
-            mail_count = 0
             try:
                 send_mail(
                     subject=Message.objects.get(pk=mailing.id).title,
@@ -36,9 +35,6 @@ class Command(BaseCommand):
                 )
                 server_response = 'ok'
                 status = True
-                mail_count += 1
-                if len(mailings) < mail_count:
-                    break
             except smtplib.SMTPException as e:
                 server_response = str(e)
                 status = False

@@ -39,30 +39,36 @@
             <div class="col-12 text-center">
                 <table class="table">
                     <tr>
-                        <th><h4>Время рассылки</h4></th>
-                        <th><h4>Статус рассылки</h4></th>
-                        <th><h4>Периодичность рассылки</h4></th>
-                        <th><h4>Подробности рассылки</h4></th>
-                        <th><h4>Редактирование рассылки</h4></th>
-                        <th><h4>Удаление рассылки</h4></th>
+                        <th><h6>Время рассылки</h6></th>
+                        <th><h6>Статус рассылки</h6></th>
+                        <th><h6>Периодичность рассылки</h6></th>
+                        <th><h6>Владелец рассылки</h6></th>
+                        {% if request.user.is_superuser %}
+                        <th><h6>Подробности рассылки</h6></th>
+                        <th><h6>Редактирование рассылки</h6></th>
+                        <th><h6>Удаление рассылки</h6></th>
+                        {% endif %}
                     </tr>
                     {% for object in object_list %}
                     <tr>
-                        <td><h4>{{ object.start_time }}</h4></td>
-                        <td><h4>{{ object.status }}</h4></td>
-                        <td><h4>{{ object.periodicity }}</h4></td>
-                        <td><h4>
+                        <td><h6>{{ object.start_time }}</h6></td>
+                        <td><h6>{{ object.status }}</h6></td>
+                        <td><h6>{{ object.periodicity }}</h6></td>
+                        <th><h6>{{ object.owner }}</h6></th>
+                        {% if request.user.is_superuser %}
+                        <td><h6>
                             <a href="{% url 'distribution:distribution_detail' object.pk %}" class="btn btn-lg btn-primary">Полная
                                 информация</a>
-                        </h4></td>
-                        <td><h4>
+                        </h6></td>
+                        <td><h6>
                             <a class="btn btn-lg btn-warning"
                                href="{% url 'distribution:distribution_edit' object.pk %}">Исправить</a>
-                        </h4></td>
-                        <td><h4>
+                        </h6></td>
+                        <td><h6>
                             <a class="btn btn-lg btn-danger"
                                href="{% url 'distribution:distribution_delete' object.pk %}">Удалить</a>
-                        </h4></td>
+                        </h6></td>
+                        {% endif %}
                         {% endfor %}
                     </tr>
                 </table>

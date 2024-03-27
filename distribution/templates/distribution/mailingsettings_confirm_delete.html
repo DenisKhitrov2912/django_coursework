@@ -5,12 +5,14 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
+                    {% if object.owner == request.user or request.user.is_superuser or request.user.is_content_manager %}
                     <form method="post">
                         {% csrf_token %}
                         <p>Хотите удалить рассылку №{{ object.pk }}?</p>
                         <button type="submit" class="btn btn-success">Подтвердить</button>
                         <a href="{% url 'distribution:distribution_list' %}" class="btn btn-warning">Отмена</a>
                     </form>
+                    {% endif %}
                 </div>
             </div>
         </div>
