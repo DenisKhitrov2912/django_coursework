@@ -11,12 +11,14 @@
             </div>
             <div class="card-body">
                 {% for object in object_list %}
+                {% if not object.is_superuser and request.user != object %}
                 <div class="d-flex align-items-center justify-content-between" style="margin-bottom: 10px;">
                     <h4 class="my-0 font-weight-normal">{{ object }}</h4>
                     <a href="{% url 'users:user_update' object.pk  %}" type="button"
                        class="btn btn-danger">Изменить активность</a>
                 </div>
                 <hr>
+                {% endif %}
                 {% endfor %}
             </div>
 

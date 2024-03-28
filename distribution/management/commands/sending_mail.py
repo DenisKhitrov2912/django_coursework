@@ -54,4 +54,5 @@ class Command(BaseCommand):
                 mailing.start_time += timedelta(days=7)
             elif mailing.periodicity == MailingSettings.MONTHLY:
                 mailing.start_time += timedelta(days=30)
+            mailing.status = MailingSettings.CREATED
             mailing.save()

@@ -26,6 +26,25 @@
                         </tr>
                         </body>
                     </table>
+                    <hr>
+                    <table class="table">
+                        <tr>
+                            <h3>Случайные статьи</h3>
+                            <th><h5>Статьи</h5></th>
+                            <th><h5>Подробнее</h5></th>
+                        </tr>
+                        <tbody>
+                        {% for article, pk in articles.items %}
+                        <tr>
+                            <td><h5>{{ article }}</h5></td>
+                            <td><a class="p-2 btn btn-primary"
+                                   href="{% url 'blog:detail' pk %}">Перейти к статье</a>
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        </tbody>
+                    </table>
+
                 </div>
             </div>
         </div>

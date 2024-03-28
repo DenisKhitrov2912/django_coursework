@@ -102,3 +102,6 @@ class UserMngUpdateView(UpdateView):
     model = User
     success_url = reverse_lazy('users:users')
     form_class = PermUserForm
+
+    def get_queryset(self):
+        return User.objects.filter(is_superuser=False)

@@ -1,8 +1,11 @@
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
+from django.core.cache import cache
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, ListView, DetailView, DeleteView, UpdateView
 from django.forms import inlineformset_factory
 
+from blog.models import Blog
 from distribution.forms import MessageForm, MailingSettingsForm, ClientForm, PermMailingSettingsForm
 from distribution.models import Client, MailingSettings, Message, Log
 
@@ -74,6 +77,21 @@ class MailingSettingsDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailV
 class MailingSettingsListView(LoginRequiredMixin, ListView):
     model = MailingSettings
 
+    def cache_example(self):
+        if settings.CACHE_ENABLED:
+            key = f'mailset_list'
+            mailset_list = cache.get(key)
+            print(mailset_list)
+            if mailset_list is None:
+                mailset_list = MailingSettings.objects.all()
+                cache.set(key, mailset_list)
+        else:
+            mailset_list = MailingSettings.objects.all()
+        return mailset_list
+
+    def get_queryset(self):
+        return self.cache_example()
+
     def get_context_data(self, *args, **kwargs):
         context_data = super().get_context_data(*args, **kwargs)
 
@@ -90,7 +108,10 @@ class MailingSettingsListView(LoginRequiredMixin, ListView):
             context_data['all'] = mailing_list.count()
             context_data['active'] = mailing_list.filter(status=MailingSettings.STARTED).count()
             context_data['clients_count'] = len(clients)
-
+        random_blogs = Blog.objects.order_by('?')[:3]
+        article_titles = [blog.title for blog in random_blogs]
+        article_pk = [blog.pk for blog in random_blogs]
+        context_data['articles'] = dict(zip(article_titles, article_pk))
         return context_data
 
 
