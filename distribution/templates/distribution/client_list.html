@@ -1,7 +1,7 @@
 {% extends "distribution/base.html" %}
 {% block content %}
 <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <h1 class="display-1">Список имеющихся клиентов</h1>
+    <h3 class="display-3">Список имеющихся клиентов</h1>
 </div>
 
 
@@ -13,23 +13,28 @@
         <div class="card-body">
             <div class="col-12">
                 <table class="table text-center">
+
                     <tr>
-                        <th><h4>ФИО клиента</h4></th>
-                        <th><h4>email клиента</h4></th>
-                        <th><h4>Комментарий</h4></th>
-                        {% if request.user.is_superuser or request.user.is_content_manager %}
-                        <th><h4>Исправить данные</h4></th>
-                        {% endif %}
+                        <th><h6>ФИО клиента</h6></th>
+                        <th><h6>email клиента</h6></th>
+                        <th><h6>Комментарий</h6></th>
+                        <th><h6>Исправить данные</h6></th>
+                        <th><h6>Перейти к клиенту</h6></th>
+                        <th><h6>Удалить клиента</h6></th>
                     </tr>
                     {% for object in object_list %}
                     <tr>
-                        <td><h4>{{ object.FIO }}</h4></td>
-                        <td><h4>{{ object.email }}</h4></td>
-                        <td><h4>{{ object.comment }}</h4></td>
-                        {% if request.user.is_superuser or request.user.is_content_manager %}
-                        <td><h4><a class="btn btn-lg btn-warning"
-                                   href="{% url 'distribution:edit_client' object.pk %}">Исправить</a></h4></td>
-                        {% endif %}
+                        <td><h6>{{ object.FIO }}</h6></td>
+                        <td><h6>{{ object.email }}</h6></td>
+                        <td><h6>{{ object.comment }}</h6></td>
+
+                        <td><h6><a class="btn btn-lg btn-warning"
+                                   href="{% url 'distribution:edit_client' object.pk %}">Исправить</a></h6></td>
+                        <td><h6><a class="btn btn-lg btn-success"
+                                   href="{% url 'distribution:detail_client' object.pk %}">Перейти</a></h6></td>
+                        <td><h6><a class="btn btn-lg btn-danger"
+                                   href="{% url 'distribution:delete_client' object.pk %}">Удалить</a></h6></td>
+
                         {% endfor %}
                     </tr>
                 </table>
@@ -38,10 +43,8 @@
     </div>
     <div class="row text-right mt-4">
         <div class="col-12">
-            {% if request.user.is_superuser or request.user.is_content_manager %}
             <a class="p-2 btn btn-outline-primary btn-block btn-lg" href="{% url 'distribution:create_client' %}">Создать
                 нового клиента</a>
-            {% endif %}
         </div>
     </div>
     {% endblock %}

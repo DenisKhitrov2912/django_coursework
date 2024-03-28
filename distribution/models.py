@@ -5,9 +5,12 @@ NULLABLE = {'null': True, 'blank': True}
 
 
 class Client(models.Model):
+    """Модель клиента"""
     FIO = models.CharField(max_length=150, verbose_name='ФИО')
     email = models.EmailField(max_length=150, verbose_name='почта', unique=True)
     comment = models.TextField(verbose_name='комментарий', **NULLABLE)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, related_name='owner_client',
+                              verbose_name="владелец", **NULLABLE)
 
     def __str__(self):
         return f"{self.FIO} {self.email}"
@@ -19,6 +22,7 @@ class Client(models.Model):
 
 
 class MailingSettings(models.Model):
+    """Модель настроек рассылки"""
     DAILY = "Раз в день"
     WEEKLY = "Раз в неделю"
     MONTHLY = "Раз в месяц"
@@ -63,6 +67,7 @@ class MailingSettings(models.Model):
 
 
 class Message(models.Model):
+    """Модель сообщений"""
     title = models.CharField(max_length=100, verbose_name='тема письма')
     text = models.TextField(verbose_name='тело письма')
     mailing_list = models.ForeignKey(MailingSettings, on_delete=models.CASCADE, verbose_name='рассылка',
@@ -77,6 +82,7 @@ class Message(models.Model):
 
 
 class Log(models.Model):
+    """Модель логов"""
     time = models.DateTimeField(verbose_name='дата и время последней попытки', auto_now_add=True)
     status = models.BooleanField(verbose_name='статус попытки')
     server_response = models.CharField(verbose_name='ответ почтового сервера', **NULLABLE)

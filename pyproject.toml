@@ -12,6 +12,8 @@ pytils = "^0.4.1"
 django-apscheduler = "^0.6.2"
 django = "4.2"
 pillow = "^10.2.0"
+redis = "^5.0.3"
+python-dotenv = "^1.0.1"
 
 
 [build-system]

@@ -1,7 +1,7 @@
 {% extends "distribution/base.html" %}
 {% block content %}
 <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <h1 class="display-1">Журнал рассылок</h1>
+    <h3 class="display-3">Лог рассылок</h3>
 </div>
 
 <div class="container col-8 mt-2 mb-5">
@@ -45,7 +45,7 @@
                         <th><h4>Статус рассылки</h4></th>
                     </tr>
                     {% for object in object_list %}
-                    {% if object.mailing_list.owner == request.user or request.user.is_superuser or request.user.is_content_manager %}
+                    {% if object.mailing_list.owner == request.user or request.user.is_superuser %}
                     <tr>
                         <td><h4>{{ object.time }}</h4></td>
                         <td><h4>{{ object.mailing_list }}</h4></td>

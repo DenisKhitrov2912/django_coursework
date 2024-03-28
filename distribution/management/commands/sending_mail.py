@@ -9,6 +9,7 @@ from distribution.models import MailingSettings, Log, Client, Message
 
 
 class Command(BaseCommand):
+    """Команда на запуск рассылки"""
     help = 'send_of_mail'
     name = 'sending_mail'
 
@@ -54,4 +55,5 @@ class Command(BaseCommand):
                 mailing.start_time += timedelta(days=7)
             elif mailing.periodicity == MailingSettings.MONTHLY:
                 mailing.start_time += timedelta(days=30)
+            mailing.status = MailingSettings.CREATED
             mailing.save()

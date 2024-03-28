@@ -10,6 +10,7 @@ from django.contrib.auth.forms import PasswordResetForm
 
 
 class UserRegisterForm(StyleFormMixin, UserCreationForm):
+    """Форма регистрации пользователя"""
     class Meta:
         model = User
         fields = ('email', 'password1', 'password2')
@@ -28,9 +29,22 @@ class UserRegisterForm(StyleFormMixin, UserCreationForm):
 
 
 class UserForm(StyleFormMixin, UserChangeForm):
+    """Форма изменения пользователя"""
     class Meta:
         model = User
-        fields = ('email', 'avatar', 'phone', 'country')
+        fields = ('email', 'phone', 'country')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['password'].widget = forms.HiddenInput()
+
+
+class PermUserForm(StyleFormMixin, UserChangeForm):
+    """Форма изменения пользователя если есть кастомные пермишены"""
+    class Meta:
+        model = User
+        fields = ('is_active',)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -39,6 +53,7 @@ class UserForm(StyleFormMixin, UserChangeForm):
 
 
 class UserPasswordResetForm(StyleFormMixin, PasswordResetForm):
+    """Форма на сброс пароля"""
     class Meta:
         model = User
         fields = ('email',)

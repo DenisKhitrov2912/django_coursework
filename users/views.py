@@ -4,20 +4,22 @@ import string
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth.views import LogoutView as BaseLogoutView
 from django.core.mail import send_mail
 
 from django.http import Http404
 from django.shortcuts import redirect
-from django.views.generic import CreateView, UpdateView, FormView, TemplateView
+from django.views.generic import CreateView, UpdateView, FormView, TemplateView, ListView, DetailView
 
-from users.forms import UserRegisterForm, UserForm, UserPasswordResetForm
+from users.forms import UserRegisterForm, UserForm, UserPasswordResetForm, PermUserForm
 from users.models import User
 from django.urls import reverse_lazy
 
 
 class LoginView(BaseLoginView):
+    """Вход"""
     template_name = 'users/login.html'
 
     def form_valid(self, form):
@@ -30,10 +32,12 @@ class LoginView(BaseLoginView):
 
 
 class LogoutView(BaseLogoutView):
+    """Выход"""
     pass
 
 
 class RegisterView(CreateView):
+    """Регистрация"""
     model = User
     form_class = UserRegisterForm
     success_url = reverse_lazy('users:login')
@@ -42,6 +46,7 @@ class RegisterView(CreateView):
 
 
 def email_verification(request, token):
+    """Верификация мыла"""
     try:
         user = User.objects.get(verification_token=token)
         user.is_verificated = True
@@ -52,6 +57,7 @@ def email_verification(request, token):
 
 
 class UserUpdateView(UpdateView):
+    """Обновление пользователя"""
     model = User
     success_url = reverse_lazy('users:profile')
     form_class = UserForm
@@ -61,6 +67,7 @@ class UserUpdateView(UpdateView):
 
 
 class UserPasswordResetView(FormView):
+    """Сброс пароля"""
     template_name = 'users/user_password_reset.html'
     form_class = UserPasswordResetForm
     success_url = reverse_lazy('users:user_password_sent')
@@ -84,4 +91,27 @@ class UserPasswordResetView(FormView):
 
 
 class UserPasswordSentView(TemplateView):
+    """Отправка пароля"""
     template_name = 'users/user_password_sent.html'
+
+
+class UserListView(PermissionRequiredMixin, ListView):
+    """Просмотр пользователей"""
+    model = User
+    permission_required = 'users.view_user'
+
+
+class UserDetailView(PermissionRequiredMixin, DetailView):
+    """Детальный просмотр пользователя"""
+    model = User
+    permission_required = 'users.view_user'
+
+
+class UserMngUpdateView(UpdateView):
+    """Изменение активности пользователя при наличии пермишена"""
+    model = User
+    success_url = reverse_lazy('users:users')
+    form_class = PermUserForm
+
+    def get_queryset(self):
+        return User.objects.filter(is_superuser=False)
