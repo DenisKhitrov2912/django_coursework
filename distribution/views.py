@@ -10,16 +10,27 @@ from distribution.models import Client, MailingSettings, Message, Log
 class ClientListView(LoginRequiredMixin, ListView):
     model = Client
 
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return Client.objects.all()
+        else:
+            return Client.objects.filter(owner=self.request.user)
 
-class ClientCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+
+class ClientCreateView(LoginRequiredMixin, CreateView):
     model = Client
     form_class = ClientForm
 
     def get_success_url(self):
         return reverse('distribution:clients_list')
 
-    def test_func(self):
-        return self.request.user.is_superuser
+
+    def form_valid(self, form):
+        self.object = form.save()
+        self.object.owner = self.request.user
+        self.object.save()
+
+        return super().form_valid(form)
 
 
 class ClientUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -30,7 +41,25 @@ class ClientUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return reverse('distribution:clients_list')
 
     def test_func(self):
-        return self.request.user.is_superuser
+        client = self.get_object()
+        return self.request.user.is_superuser or self.request.user == client.owner
+
+
+class ClientDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+    model = Client
+
+    def test_func(self):
+        client = self.get_object()
+        return self.request.user.is_superuser or self.request.user == client.owner
+
+
+class ClientDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Client
+    success_url = reverse_lazy('distribution:clients_list')
+
+    def test_func(self):
+        client = self.get_object()
+        return self.request.user.is_superuser or self.request.user == client.owner
 
 
 class MailingSettingsDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):

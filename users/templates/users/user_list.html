@@ -6,16 +6,20 @@
     <div class="col-3"></div>
     <div class="col-6">
         <div class="card">
-            <div class="card-header">
-                Пользователи
+            <div class="card-header text-center">
+                <h4>Пользователи</h4>
             </div>
             <div class="card-body">
                 {% for object in object_list %}
-                <h4 class="my-0 font-weight-normal">{{ object }}</h4>
-                <a href="{% url 'users:user_update' object.pk  %}" type="button"
-                   class="btn btn-lg btn-block btn-outline-primary">Изменить активность</a>
+                <div class="d-flex align-items-center justify-content-between" style="margin-bottom: 10px;">
+                    <h4 class="my-0 font-weight-normal">{{ object }}</h4>
+                    <a href="{% url 'users:user_update' object.pk  %}" type="button"
+                       class="btn btn-danger">Изменить активность</a>
+                </div>
+                <hr>
                 {% endfor %}
             </div>
+
             <div class="card-footer"></div>
         </div>
     </div>

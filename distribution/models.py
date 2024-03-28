@@ -8,6 +8,8 @@ class Client(models.Model):
     FIO = models.CharField(max_length=150, verbose_name='ФИО')
     email = models.EmailField(max_length=150, verbose_name='почта', unique=True)
     comment = models.TextField(verbose_name='комментарий', **NULLABLE)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, related_name='owner_client',
+                              verbose_name="владелец", **NULLABLE)
 
     def __str__(self):
         return f"{self.FIO} {self.email}"
