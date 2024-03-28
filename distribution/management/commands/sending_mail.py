@@ -9,6 +9,7 @@ from distribution.models import MailingSettings, Log, Client, Message
 
 
 class Command(BaseCommand):
+    """Команда на запуск рассылки"""
     help = 'send_of_mail'
     name = 'sending_mail'
 

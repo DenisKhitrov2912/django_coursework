@@ -11,6 +11,7 @@ from distribution.models import Client, MailingSettings, Message, Log
 
 
 class ClientListView(LoginRequiredMixin, ListView):
+    """Список клиентов"""
     model = Client
 
     def get_queryset(self):
@@ -21,6 +22,7 @@ class ClientListView(LoginRequiredMixin, ListView):
 
 
 class ClientCreateView(LoginRequiredMixin, CreateView):
+    """Создание клиента"""
     model = Client
     form_class = ClientForm
 
@@ -37,6 +39,7 @@ class ClientCreateView(LoginRequiredMixin, CreateView):
 
 
 class ClientUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    """Обновление клиента"""
     model = Client
     form_class = ClientForm
 
@@ -49,6 +52,7 @@ class ClientUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 
 class ClientDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+    """Просмотр одного клиента"""
     model = Client
 
     def test_func(self):
@@ -57,6 +61,7 @@ class ClientDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 
 
 class ClientDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    """Удаление клиента"""
     model = Client
     success_url = reverse_lazy('distribution:clients_list')
 
@@ -66,6 +71,7 @@ class ClientDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 
 class MailingSettingsDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+    """Просмотр одной рассылки"""
     model = MailingSettings
 
     def test_func(self):
@@ -75,6 +81,7 @@ class MailingSettingsDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailV
 
 
 class MailingSettingsListView(LoginRequiredMixin, ListView):
+    """Просмотр списка рассылок"""
     model = MailingSettings
 
     def cache_example(self):
@@ -116,6 +123,7 @@ class MailingSettingsListView(LoginRequiredMixin, ListView):
 
 
 class MailingSettingsCreateView(LoginRequiredMixin, CreateView):
+    """Создание рассылки"""
     model = MailingSettings
     form_class = MailingSettingsForm
     success_url = reverse_lazy('distribution:distribution_list')
@@ -148,6 +156,7 @@ class MailingSettingsCreateView(LoginRequiredMixin, CreateView):
 
 
 class MailingSettingsDeleteView(LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin, DeleteView):
+    """Удаление рассылки"""
     model = MailingSettings
     permission_required = 'distribution.delete_mailingsettings'
 
@@ -160,6 +169,7 @@ class MailingSettingsDeleteView(LoginRequiredMixin, PermissionRequiredMixin, Use
 
 
 class MailingSettingsUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    """Обновление рассылки"""
     model = MailingSettings
     form_class = MailingSettingsForm
 
@@ -196,6 +206,7 @@ class MailingSettingsUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateV
 
 
 class LogListView(LoginRequiredMixin, ListView):
+    """Просмотр списка логов"""
     model = Log
 
     def get_context_data(self, *args, **kwargs):

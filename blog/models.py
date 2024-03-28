@@ -4,6 +4,7 @@ from distribution.models import NULLABLE
 
 
 class Blog(models.Model):
+    """Модель блога"""
     title = models.CharField(max_length=50, verbose_name='заголовок')
     text = models.TextField(verbose_name='текст')
     image = models.ImageField(upload_to='blog/', verbose_name='изображение', **NULLABLE)

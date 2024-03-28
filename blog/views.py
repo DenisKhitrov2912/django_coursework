@@ -5,6 +5,7 @@ from blog.models import Blog
 
 
 class BlogDetailView(DetailView):
+    """Конкретный блог"""
     model = Blog
 
     def get(self, request, *args, **kwargs):

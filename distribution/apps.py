@@ -4,6 +4,7 @@ from django.apps import AppConfig
 
 
 class DistributionConfig(AppConfig):
+    """Запуск рассылки при запуске сервера"""
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'distribution'
 

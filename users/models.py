@@ -5,6 +5,7 @@ from distribution.models import NULLABLE
 
 
 class User(AbstractUser):
+    """Модель пользователя"""
     username = None
 
     email = models.EmailField(unique=True, verbose_name='email')

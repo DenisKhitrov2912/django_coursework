@@ -10,7 +10,7 @@ from django.contrib.auth.forms import PasswordResetForm
 
 
 class UserRegisterForm(StyleFormMixin, UserCreationForm):
-
+    """Форма регистрации пользователя"""
     class Meta:
         model = User
         fields = ('email', 'password1', 'password2')
@@ -29,6 +29,7 @@ class UserRegisterForm(StyleFormMixin, UserCreationForm):
 
 
 class UserForm(StyleFormMixin, UserChangeForm):
+    """Форма изменения пользователя"""
     class Meta:
         model = User
         fields = ('email', 'phone', 'country')
@@ -40,6 +41,7 @@ class UserForm(StyleFormMixin, UserChangeForm):
 
 
 class PermUserForm(StyleFormMixin, UserChangeForm):
+    """Форма изменения пользователя если есть кастомные пермишены"""
     class Meta:
         model = User
         fields = ('is_active',)
@@ -51,6 +53,7 @@ class PermUserForm(StyleFormMixin, UserChangeForm):
 
 
 class UserPasswordResetForm(StyleFormMixin, PasswordResetForm):
+    """Форма на сброс пароля"""
     class Meta:
         model = User
         fields = ('email',)
