@@ -49,10 +49,12 @@ class MailingSettings(models.Model):
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default=CREATED, verbose_name='статус рассылки')
 
     clients = models.ManyToManyField(Client, verbose_name='клиенты рассылки')
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, related_name='owner', verbose_name="владелец", **NULLABLE)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, related_name='owner',
+                              verbose_name="владелец", **NULLABLE)
 
     def __str__(self):
-        return f'time: {self.start_time} - {self.end_time}, periodicity: {self.periodicity}, status: {self.status}, owner: {self.owner}'
+        return f'time: {self.start_time} - {self.end_time}, periodicity: {self.periodicity}, status: {self.status},' \
+               f'owner: {self.owner}'
 
     class Meta:
         verbose_name = 'настройки рассылки'

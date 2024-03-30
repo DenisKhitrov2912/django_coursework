@@ -11,6 +11,7 @@ from django.contrib.auth.forms import PasswordResetForm
 
 class UserRegisterForm(StyleFormMixin, UserCreationForm):
     """Форма регистрации пользователя"""
+
     class Meta:
         model = User
         fields = ('email', 'password1', 'password2')
@@ -22,7 +23,8 @@ class UserRegisterForm(StyleFormMixin, UserCreationForm):
         user.save()
 
         subject = 'Подтверждение почты'
-        message = f"Для подтверждения вашей учетной записи перейдите по ссылке: 'http://127.0.0.1:8000/users/email/verification/{user.verification_token}/'"
+        message = (f"Для подтверждения вашей учетной записи перейдите по ссылке: "
+                   f"'http://127.0.0.1:8000/users/email/verification/{user.verification_token}/'")
         send_mail(subject, message, settings.EMAIL_HOST_USER, [user.email])
 
         return user
@@ -30,6 +32,7 @@ class UserRegisterForm(StyleFormMixin, UserCreationForm):
 
 class UserForm(StyleFormMixin, UserChangeForm):
     """Форма изменения пользователя"""
+
     class Meta:
         model = User
         fields = ('email', 'phone', 'country')
@@ -42,6 +45,7 @@ class UserForm(StyleFormMixin, UserChangeForm):
 
 class PermUserForm(StyleFormMixin, UserChangeForm):
     """Форма изменения пользователя если есть кастомные пермишены"""
+
     class Meta:
         model = User
         fields = ('is_active',)
@@ -54,6 +58,7 @@ class PermUserForm(StyleFormMixin, UserChangeForm):
 
 class UserPasswordResetForm(StyleFormMixin, PasswordResetForm):
     """Форма на сброс пароля"""
+
     class Meta:
         model = User
         fields = ('email',)
