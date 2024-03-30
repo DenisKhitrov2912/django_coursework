@@ -29,7 +29,6 @@ class ClientCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse('distribution:clients_list')
 
-
     def form_valid(self, form):
         self.object = form.save()
         self.object.owner = self.request.user
@@ -76,8 +75,9 @@ class MailingSettingsDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailV
 
     def test_func(self):
         mailing_settings = self.get_object()
-        return self.request.user.is_superuser or self.request.user == mailing_settings.owner or self.request.user.has_perm(
-            'distribution.view_mailingsettings')
+        return (self.request.user.is_superuser or self.request.user == mailing_settings.owner or
+                self.request.user.has_perm(
+                    'distribution.view_mailingsettings'))
 
 
 class MailingSettingsListView(LoginRequiredMixin, ListView):
