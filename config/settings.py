@@ -83,7 +83,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.getenv('POSTGRES_DB'),
         'USER': os.getenv('POSTGRES_USER'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD')
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': os.getenv('POSTGRES_HOST'),
+        'PORT': os.getenv('POSTGRES_PORT')
     }
 }
 
@@ -154,8 +156,8 @@ CACHE_ENABLED = os.getenv('CACHE_ENABLED') == 'True'
 if CACHE_ENABLED:
     CACHES = {
         "default": {
-            "BACKEND": os.getenv("REDIS"),
-            "LOCATION": "redis://127.0.0.1:6379",
-            "TIMEOUT": 300  # Ручная регулировка времени жизни кеша в секундах, по умолчанию 300
+            "BACKEND": 'django.core.cache.backends.redis.RedisCache',
+            "LOCATION": os.getenv('REDIS'),
+            "TIMEOUT": 300
         }
     }
