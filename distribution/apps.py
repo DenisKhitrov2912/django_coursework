@@ -1,6 +1,22 @@
 import time
-
+from apscheduler.schedulers.background import BackgroundScheduler
+from django.core.management import call_command
 from django.apps import AppConfig
+
+
+def sending_mail():
+    """Вызов кастомной команды рассылки"""
+    call_command('sending_mail')
+
+
+def start():
+    """Старт рассылки с интервалом проверки"""
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(sending_mail, 'interval', minutes=0.1)
+    scheduler.start()
+
+
+start()
 
 
 class DistributionConfig(AppConfig):
@@ -9,6 +25,5 @@ class DistributionConfig(AppConfig):
     name = 'distribution'
 
     def ready(self):
-        from distribution.services import sending_mail
         time.sleep(2)
         sending_mail()
