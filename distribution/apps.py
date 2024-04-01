@@ -1,4 +1,4 @@
-from asyncio import sleep
+import time
 
 from django.apps import AppConfig
 
@@ -10,5 +10,5 @@ class DistributionConfig(AppConfig):
 
     def ready(self):
         from distribution.services import sending_mail
-        sleep(2)
+        time.sleep(2)
         sending_mail()
